@@ -1,0 +1,1235 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Tender Management Golang REST API",
+        "title": "Tender Management REST API",
+        "contact": {
+            "name": "Muxtorxon Gofurov",
+            "url": "https://github.com/muhtorkhon",
+            "email": "muhtorhongofurov@gmail.com"
+        },
+        "version": "1.0"
+    },
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Allows a user to log in using email and password. If valid, returns a JWT token.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login a user",
+                "parameters": [
+                    {
+                        "description": "Login Credentials",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully restored the category",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized: Invalid credentials",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Registers a new user by providing phone number, email, and password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Create a new user",
+                "parameters": [
+                    {
+                        "description": "User Registration Data",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.UserRegister"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Successfully created the user",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/verify": {
+            "post": {
+                "description": "Verifies the user's phone number using the code sent earlier. If valid, activates the user.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Verify phone number with the code",
+                "parameters": [
+                    {
+                        "description": "Phone number and code verification data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.VerifyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User verified and activated successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid or expired code",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/client/notifs/{user_id}/{relation_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Client uchun o‘ziga tegishli xabarni olish",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get Client Notification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Relation ID",
+                        "name": "relation_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Notif"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Notif not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/contractor/notifs/{user_id}/{relation_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Contractor uchun o‘ziga tegishli xabarni olish",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get Contractor Notification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Relation ID",
+                        "name": "relation_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Notif"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Notif not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/notifs": {
+            "post": {
+                "description": "Yangi xabar yaratish (Client yoki Contractor uchun)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Create Notification",
+                "parameters": [
+                    {
+                        "description": "Notification Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.NotifRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Notif"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve a paginated list of all offers.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Get all offers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Offers"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch offers",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This endpoint creates a new offer with the provided details.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Create a new offer",
+                "parameters": [
+                    {
+                        "description": "Offer Request Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OffersRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Offers"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to parse request body",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to create offer",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/filter": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves offers with minimum and maximum prices and delivery times, along with their counts.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Get min, max prices and delivery times with filtered count",
+                "responses": {
+                    "200": {
+                        "description": "Details of min/max offers and counts",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/sorted": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "This endpoint retrieves a list of offers with pagination, sorted by price and delivery time.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Get filtered and sorted offers with pagination",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Number of offers per page",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with offers and total count",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/{contractor_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve an offer by its ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Get a specific offer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Contractor ID",
+                        "name": "contractor_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Offers"
+                        }
+                    },
+                    "404": {
+                        "description": "Offer not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Update the details of an offer by its ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Update an existing offer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated offer details",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.OffersRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.OffersRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed to parse request body",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Offer not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Mark an offer as deleted by setting the DeletedAt field.",
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Soft delete an offer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Offer deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Offer not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/{id}/restore": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Restore an offer that was previously soft deleted.",
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Restore a soft-deleted offer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Offer restored successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Offer not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders": {
+            "get": {
+                "description": "Retrieve all tenders with pagination support",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tender"
+                ],
+                "summary": "Get all tenders with pagination",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "pageSize",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Tenders"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new tender with the provided details",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tender"
+                ],
+                "summary": "Create a new tender",
+                "parameters": [
+                    {
+                        "description": "Tender Request Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TenderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Tenders"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/restore/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Restores a tender by removing the `DeletedAt` timestamp, making it active again.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tender"
+                ],
+                "summary": "Restore a soft deleted tender by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tender restored successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Tender not found or already active",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/{client_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve all tenders for a specific client",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tender"
+                ],
+                "summary": "Get tenders by client ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client ID",
+                        "name": "client_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Tenders"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/tenders/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates the details of an existing tender",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tender"
+                ],
+                "summary": "Update an existing tender",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated Tender Body",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.TenderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Tender not found",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marks a tender as deleted by setting the `DeletedAt` timestamp.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tender"
+                ],
+                "summary": "Soft delete a tender by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Tender ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tender deleted successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Tender not found or already deleted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controllers.Response": {
+            "type": "object",
+            "properties": {
+                "message": {}
+            }
+        },
+        "models.LoginRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Notif": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "relation_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.NotifRequest": {
+            "type": "object",
+            "required": [
+                "message",
+                "relation_id",
+                "type",
+                "user_id"
+            ],
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "relation_id": {
+                    "type": "integer"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.Offers": {
+            "type": "object",
+            "required": [
+                "contractor_id",
+                "tender_id"
+            ],
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "contractor_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "delivery_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "tender_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.OffersRequest": {
+            "type": "object",
+            "required": [
+                "comments",
+                "contractor_id",
+                "delivery_time",
+                "price",
+                "tender_id"
+            ],
+            "properties": {
+                "comments": {
+                    "type": "string"
+                },
+                "contractor_id": {
+                    "type": "integer"
+                },
+                "delivery_time": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "tender_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.TenderRequest": {
+            "type": "object",
+            "required": [
+                "budget",
+                "client_id",
+                "deadline",
+                "description",
+                "title"
+            ],
+            "properties": {
+                "budget": {
+                    "type": "number"
+                },
+                "client_id": {
+                    "type": "integer"
+                },
+                "deadline": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "file_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Tenders": {
+            "type": "object",
+            "required": [
+                "client_id"
+            ],
+            "properties": {
+                "budget": {
+                    "type": "number"
+                },
+                "client_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deadline": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "file_url": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserRegister": {
+            "type": "object",
+            "required": [
+                "email",
+                "first_name",
+                "phone_number",
+                "role"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "client",
+                        "contractor"
+                    ]
+                }
+            }
+        },
+        "models.VerifyRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        },
+        "BearerAuth": {
+            "description": "Bearer token",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
