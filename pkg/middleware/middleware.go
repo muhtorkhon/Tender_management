@@ -6,10 +6,11 @@ import (
 	"tender_management/controllers"
 	"tender_management/pkg/utils"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 )
 
-func AutoMiddleware(role string) gin.HandlerFunc {
+func AutoMiddleware(e *casbin.Enforcer) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
@@ -30,17 +31,20 @@ func AutoMiddleware(role string) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-
-		if claims.Role != role {
-			log.Printf("[ERROR] Access denied for role: %s, required: %s\n", claims.Role, role)
-			controllers.HandleResponse(c, http.StatusForbidden, "Access denied")
+		alloved, err := e.Enforce(claims.Role, c.Request.URL.Path, c.Request.Method)
+		if err != nil {
+			controllers.HandleResponse(c, http.StatusInternalServerError, "Access denied")
+			log.Println("[ERROR] Casbin enforcement error: ", err)
 			c.Abort()
 			return
 		}
 
-		log.Printf("[INFO] Authorized request: Email: %s, Role: %s\n", claims.Email, claims.Role)
-		c.Set("email", claims.Email)
-		c.Set("role", claims.Role)
+		if !alloved {
+			controllers.HandleResponse(c,http.StatusForbidden, "Access denied")
+			log.Printf("[INFO] Access denied for user: %v, Path: %s, Method: %s\n", claims.Role, c.Request.URL.Path, c.Request.Method)
+			c.Abort()
+			return
+		}
 		c.Next()
 	}
 }

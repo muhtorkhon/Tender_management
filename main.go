@@ -11,6 +11,7 @@ import (
 
 	_ "tender_management/docs"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
@@ -30,6 +31,12 @@ import (
 // @description Bearer token
 // @type apiKey
 func main() {
+
+	enforcer, err := casbin.NewEnforcer("auth_model.conf", "policy.csv")
+	if err != nil {
+		log.Println("Error configuring casbin", err)
+	}
+
 	r := gin.Default()
 	
 	cfg := config.LoadConfig()
@@ -55,24 +62,8 @@ func main() {
 	r.POST("/auth/verify", authSt.VerifyCode)
 	r.POST("/auth/login", authSt.LoginUser)
 
-	r.POST("/tenders", tenderSt.CreateTender)
-	r.GET("/tenders/:client_id", tenderSt.GetTenders)
-	r.GET("/tenders", tenderSt.GetAllTenders)
-	r.PUT("/tenders/:id", tenderSt.UpdateTender)
-	r.DELETE("/tenders/:id", tenderSt.DeleteTender)
-	r.PATCH("/tenders/restore/:id", tenderSt.RestoreTender)
-
-	r.POST("/offers", offerSt.CreateOffer)
-	r.GET("/offers", offerSt.GetAllOffers)
-	r.GET("/offers/:contractor_id", offerSt.GetOffer)
-	r.GET("/offers/sorted", offerSt.GetFilterSort)
-	r.GET("/offers/filter", offerSt.GetMaxMinFilter)
-	r.PUT("/offers/:id", offerSt.UpdateOffer)
-	r.DELETE("/offers/:id", offerSt.DeleteOffer)
-	r.PATCH("/offers/:id/restore", offerSt.RestoreOffer)
-
 	client := r.Group("/client")
-	client.Use(middleware.AutoMiddleware("client"))
+	client.Use(middleware.AutoMiddleware(enforcer))
 	{
 		client.GET("/dashboard", func(c *gin.Context) {
 			c.JSON(200, "Welcome to the client dashboard")
@@ -90,11 +81,11 @@ func main() {
 		client.GET("/offers/filter", offerSt.GetMaxMinFilter)
 
 		client.POST("/notifs", notifSt.CreateNotif)
-		client.GET("/notifsf/:user_id/:relation_id", notifSt.GetNotifClient)
+		client.GET("/notifs/:user_id/:relation_id", notifSt.GetNotifClient)
 	}
 
 	contractor := r.Group("/contractor")
-	contractor.Use(middleware.AutoMiddleware("contractor"))
+	contractor.Use(middleware.AutoMiddleware(enforcer))
 	{
 		contractor.GET("/profile", func(c *gin.Context) {
 			email, _ := c.Get("email")
@@ -107,14 +98,14 @@ func main() {
 		contractor.GET("/offers/:contractor_id", offerSt.GetOffer)
 		contractor.PUT("/offers/:id", offerSt.UpdateOffer)
 		contractor.DELETE("/offers/:id", offerSt.DeleteOffer)
-		contractor.PATCH("/offers/:id/restore", offerSt.RestoreOffer)
+		contractor.PATCH("/offers/restore/:id", offerSt.RestoreOffer)
 
 		contractor.GET("/tenders", tenderSt.GetAllTenders)
 
 		contractor.POST("/notifs", notifSt.CreateNotif)
 		contractor.GET("/notifs/:user_id/:relation_id", notifSt.GetNotifContractor)
 	}
-	
+
 	r.GET("/Tender-management/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if err := r.Run(":8080"); err != nil {
