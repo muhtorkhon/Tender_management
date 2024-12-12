@@ -1,6 +1,6 @@
 p, client, /tenders, POST
 p, client, /tenders, GET
-p, client, //tenders/:client_id, GET
+p, client, /tenders/:client_id, GET
 p, client, /tenders/:id,  PUT
 p, client, /tenders/:id, DELETE
 p, client, /tenders/restore/:id, PATCH

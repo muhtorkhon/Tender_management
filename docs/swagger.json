@@ -163,126 +163,6 @@
                 }
             }
         },
-        "/client/notifs/{user_id}/{relation_id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Client uchun o‘ziga tegishli xabarni olish",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Notifications"
-                ],
-                "summary": "Get Client Notification",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Relation ID",
-                        "name": "relation_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Notif"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Notif not found",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/contractor/notifs/{user_id}/{relation_id}": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Contractor uchun o‘ziga tegishli xabarni olish",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Notifications"
-                ],
-                "summary": "Get Contractor Notification",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "User ID",
-                        "name": "user_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Relation ID",
-                        "name": "relation_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Notif"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.Response"
-                        }
-                    },
-                    "404": {
-                        "description": "Notif not found",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.Response"
-                        }
-                    }
-                }
-            }
-        },
         "/notifs": {
             "post": {
                 "description": "Yangi xabar yaratish (Client yoki Contractor uchun)",
@@ -322,6 +202,66 @@
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/notifs/{user_id}/{relation_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "User uchun o‘ziga tegishli xabarni olish",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get User Notification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Relation ID",
+                        "name": "relation_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Notif"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    },
+                    "404": {
+                        "description": "Notif not found",
                         "schema": {
                             "$ref": "#/definitions/controllers.Response"
                         }
@@ -453,6 +393,43 @@
                     },
                     "500": {
                         "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/offers/restore/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Restore an offer that was previously soft deleted.",
+                "tags": [
+                    "offers"
+                ],
+                "summary": "Restore a soft-deleted offer",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Offer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Offer restored successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Offer not found",
                         "schema": {
                             "$ref": "#/definitions/controllers.Response"
                         }
@@ -628,43 +605,6 @@
                 "responses": {
                     "200": {
                         "description": "Offer deleted successfully",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Offer not found",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.Response"
-                        }
-                    }
-                }
-            }
-        },
-        "/offers/{id}/restore": {
-            "patch": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Restore an offer that was previously soft deleted.",
-                "tags": [
-                    "offers"
-                ],
-                "summary": "Restore a soft-deleted offer",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Offer ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Offer restored successfully",
                         "schema": {
                             "type": "string"
                         }
@@ -1222,9 +1162,6 @@
         }
     },
     "securityDefinitions": {
-        "BasicAuth": {
-            "type": "basic"
-        },
         "BearerAuth": {
             "description": "Bearer token",
             "type": "apiKey",

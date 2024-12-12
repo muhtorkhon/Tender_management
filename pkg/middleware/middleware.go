@@ -31,9 +31,10 @@ func AutoMiddleware(e *casbin.Enforcer) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
 		alloved, err := e.Enforce(claims.Role, c.Request.URL.Path, c.Request.Method)
 		if err != nil {
-			controllers.HandleResponse(c, http.StatusInternalServerError, "Access denied")
+			controllers.HandleResponse(c, http.StatusInternalServerError, "Casbin enforcement error")
 			log.Println("[ERROR] Casbin enforcement error: ", err)
 			c.Abort()
 			return

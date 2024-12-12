@@ -284,7 +284,7 @@ func (o *OfferController) DeleteOffer(c *gin.Context) {
 // @Param        id   path      string  true  "Offer ID"
 // @Success      200  {string}  string  "Offer restored successfully"
 // @Failure      404  {object}  Response  "Offer not found"
-// @Router       /offers/{id}/restore [patch]
+// @Router       /offers/restore/{id} [patch]
 func (t *OfferController) RestoreOffer(c *gin.Context) {
 	id := c.Param("id")
 

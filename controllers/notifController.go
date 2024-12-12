@@ -53,19 +53,18 @@ func (n *NotifController) CreateNotif(c *gin.Context) {
 	HandleResponse(c, http.StatusOK, notif)
 } 
 
-// @Summary      Get Client Notification
-// @Description  Client uchun o‘ziga tegishli xabarni olish
+// @Summary      Get User Notification
+// @Description  User uchun o‘ziga tegishli xabarni olish
 // @Tags         Notifications
 // @Produce      json
 // @Security     BearerAuth
-// @Param        Authorization header string true "Bearer token"
 // @Param        user_id      path  string  true  "User ID"
 // @Param        relation_id  path  string  true  "Relation ID"
 // @Success      200  {object}  models.Notif
 // @Failure      404  {object}  Response  "Notif not found"
 // @Failure      400  {object}  Response  "Bad Request"
-// @Router       /client/notifs/{user_id}/{relation_id} [get]
-func (n *NotifController) GetNotifClient(c *gin.Context) {
+// @Router       /notifs/{user_id}/{relation_id} [get]
+func (n *NotifController) GetNotifsUser(c *gin.Context) {
 	userID := c.Param("user_id")
 	relationID := c.Param("relation_id")
 
@@ -83,33 +82,5 @@ func (n *NotifController) GetNotifClient(c *gin.Context) {
 	HandleResponse(c, http.StatusOK, notif)
 }
 
-// @Summary      Get Contractor Notification
-// @Description  Contractor uchun o‘ziga tegishli xabarni olish
-// @Tags         Notifications
-// @Produce      json
-// @Security     BearerAuth
-// @Param        Authorization header string true "Bearer token"
-// @Param        user_id      path  string  true  "User ID"
-// @Param        relation_id  path  string  true  "Relation ID"
-// @Success      200  {object}  models.Notif
-// @Failure      404  {object}  Response "Notif not found"
-// @Failure      400  {object}  Response  "Bad Request"
-// @Router       /contractor/notifs/{user_id}/{relation_id} [get]
-func (n *NotifController) GetNotifContractor(c *gin.Context) {
-	userID := c.Param("user_id")
-	relationID := c.Param("relation_id")
 
-	var notif models.Notif
-
-	if err := n.Storage.Where("user_id = ? AND relation_id = ?", userID, relationID).First(&notif).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			handleError(c, http.StatusNotFound, "Notif not found", err)
-			return
-		}
-		handleError(c, http.StatusBadRequest, "Something went wrong while fetching the notification", err)
-		return
-	}
-	
-	HandleResponse(c, http.StatusOK, notif)
-}
 
