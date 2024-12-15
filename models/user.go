@@ -35,3 +35,19 @@ type Claims struct {
 	Role  string `json:"role"`
 	jwt.RegisteredClaims
 }
+
+type ResetPassword struct {
+	ConfirmPassword string `json:"confirm_password"`
+	NewPassword     string `json:"new_password"`
+	UserID          uint   `json:"user_id"`
+}
+
+type ForgotPassword struct {
+	PhoneNumber string `json:"phone_number"`
+}
+
+type NewPassword struct {
+	UserID      uint   `json:"user_id" binding:"required"`
+	NewPassword string `json:"new_password" binding:"required"`
+}
+

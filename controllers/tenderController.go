@@ -89,6 +89,7 @@ func (t *TenderController) GetTenders(c *gin.Context) {
 // @Summary 		Get all tenders with pagination
 // @Description 	Retrieve all tenders with pagination support
 // @Tags 			tender
+// @Security 		BearerAuth
 // @Produce 		json
 // @Param 			page query int false "Page number"
 // @Param 			pageSize query int false "Page size"

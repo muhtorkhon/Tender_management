@@ -51,7 +51,7 @@ func main() {
 		log.Fatalf("Redis ulanish xatosi: %v", err)
 	}
 	
-	authSt := controllers.NewAuthController(conn, redisDb)
+	authSt := controllers.NewAuthController(conn, redisDb, &cfg)
 	tenderSt := controllers.NewTenderController(conn)
 	offerSt := controllers.NewOfferController(conn)
 	notifSt := controllers.NewNotifController(conn)
@@ -61,6 +61,10 @@ func main() {
 	public.POST("/auth/register", authSt.CreateUser)
 	public.POST("/auth/verify", authSt.VerifyCode)
 	public.POST("/auth/login", authSt.LoginUser)
+	public.POST("/auth/reset-password", authSt.ResetPassword)
+	public.POST("/auth/forgot-password", authSt.ForGotPassword)
+	public.POST("/auth/verify-forgot-password", authSt.VerifyForgotPassword)
+	public.POST("/auth/new-password", authSt.NewPassword)
 
 	r.Use(middleware.AutoMiddleware(enforcer))
 
